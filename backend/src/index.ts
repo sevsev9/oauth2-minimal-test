@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import {createUser, dbConnect} from "./db/dbUtil";
-import {testFileRoute, oAuthReturnRoute, authGitHub, oAuthLogin} from "./routes/userRoutes";
+import {testFileRoute, oAuthReturnRoute, authGitHub, oAuthLogin} from "./routes/gitHubOAuthHandler";
 import axios from "axios";
 import {IGitHubUser} from "./types/GitHubUser";
 
