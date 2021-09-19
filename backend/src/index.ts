@@ -15,7 +15,6 @@ app.use(express.urlencoded({extended: true}));
 
 app.get('/test', testFileRoute);
 
-app.use('/userdata', AuthRouter);
 app.use('/google', GRouter);
 app.use('/github', GHRouter);
 
