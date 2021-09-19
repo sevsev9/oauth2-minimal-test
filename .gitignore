@@ -107,6 +107,10 @@ dist
 # TernJS port file
 .tern-port
 
+# WebStorm
+.idea/
+package-lock.json
+
 # Xcode
 #
 build/
