@@ -1,6 +1,7 @@
 import {connect} from "mongoose";
 import {UserModel} from "./dbSchemas";
 import {IGitHubUser} from "../types/GitHubUser";
+import {IMinimalUser} from "../types/MinimalUser";
 
 export function dbConnect(host: String, port: Number | String, authDatabase: String, username: String, password: String) {
     return new Promise<string>(async (resolve, reject) => {
@@ -18,7 +19,7 @@ export function dbConnect(host: String, port: Number | String, authDatabase: Str
 }
 
 export function createUser(user: IGitHubUser) {
-    const usr = new UserModel({
+    return new UserModel({
         uid: user.id,
         username: user.login,
         password: (user.password) ? user.password : "",
@@ -28,8 +29,16 @@ export function createUser(user: IGitHubUser) {
         bio: user.bio,
         location: user.location,
         blog: user.blog,
-    });
-    return usr.save();
+    }).save();
+}
+
+export function createMinimalUser(user: IMinimalUser) {
+    return new UserModel({
+        username: user.username,
+        password: "",
+        email: user.email,
+        name: user.name
+    }).save();
 }
 
 export function findUser(username: String) {
