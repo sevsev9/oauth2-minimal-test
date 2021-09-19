@@ -10,7 +10,7 @@ export function auth(req: Request, res: Response) {
     )
 }
 
-export function oAuthReturnRoute(req: Request, res: Response) { //response from the GitHub OAuth API
+export function callback(req: Request, res: Response) { //response from the GitHub OAuth API
     const {code} = req.query;
     const body = {
         client_id: process.env.GITHUB_CLIENT_ID,
@@ -21,13 +21,13 @@ export function oAuthReturnRoute(req: Request, res: Response) { //response from 
     axios.post('https://github.com/login/oauth/access_token', body, opts)
         .then((_res) => {
             console.log(`Access Token: ${_res.data.access_token}`);
-            res.redirect(`/userdata/github?token=${_res.data.access_token}`);
+            res.redirect(`/github/userdata?token=${_res.data.access_token}`);
         }).catch(err => {
         res.status(500).json({err: true, msg: err.message});
     });
 }
 
-export function oAuthLogin(req: Request, res: Response) {
+export function login(req: Request, res: Response) {
     axios.get('https://api.github.com/user', {
         headers: {
             Authorization: 'token ' + req.query.token
