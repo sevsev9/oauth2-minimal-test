@@ -1,9 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
-import {createUser, dbConnect} from "./db/dbUtil";
-import {testFileRoute, oAuthReturnRoute, authGitHub, oAuthLogin} from "./routes/gitHubOAuthHandler";
-import axios from "axios";
-import {IGitHubUser} from "./types/GitHubUser";
+import { dbConnect } from "./db/dbUtil";
+import {testFileRoute} from "./routes/siteRoutes";
+import GHRouter from "./routes/gitHubOAuthRouter";
+import GRouter from "./routes/googleOAuthRouter";
+import AuthRouter from "./routes/authRouter";
+
 
 dotenv.config();
 
@@ -12,11 +14,14 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 app.get('/test', testFileRoute);
-app.get('/oauth', oAuthReturnRoute);
-app.get('/auth', authGitHub);
+
+app.use('/userdata', AuthRouter);
+app.use('/google', GRouter);
+app.use('/github', GHRouter);
+
 app.use('/', express.static('public'));
 
-app.get('/userdata', oAuthLogin)
+
 
 dbConnect(
   process.env.MONGODB_HOST!,
