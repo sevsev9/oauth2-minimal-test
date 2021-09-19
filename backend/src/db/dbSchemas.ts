@@ -13,11 +13,11 @@ export interface IUser extends Document {
 }
 
 const UserSchema: Schema = new Schema({
-    uid: {type: Number, required: true, unique: true},
+    uid: {type: Number, required: false, unique: true},
     username: {type: String, required: true, unique: true},
     password: String, //not required due to OAuth
     email: {type: String, required: true, unique: true}, //client sided 512bit encrypted
-    name: String,
+    name: {type: String, required: true, unique: false},
     avatar_url: String,
     bio: String,
     location: String,
