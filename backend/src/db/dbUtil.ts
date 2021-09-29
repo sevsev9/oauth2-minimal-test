@@ -3,10 +3,10 @@ import {UserModel} from "./dbSchemas";
 import {IGitHubUser} from "../types/GitHubUser";
 import {IMinimalUser} from "../types/MinimalUser";
 
-export function dbConnect(host: String, port: Number | String, authDatabase: String, username: String, password: String) {
+export function dbConnect(host: string, port: number | string, authDatabase: string, username: string, password: string, database: string) {
     return new Promise<string>(async (resolve, reject) => {
         try {
-            await connect(`mongodb://${username}:${password}@${host}:${port}/?authSource=${authDatabase}&readPreference=primary`, {
+            await connect(`mongodb://${username}:${password}@${host}:${port}/${database}?authSource=${authDatabase}&readPreference=primary`, {
                 // @ts-ignore
                 useNewUrlParser: true,
                 useUnifiedTopology: true

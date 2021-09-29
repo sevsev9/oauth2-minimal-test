@@ -29,6 +29,7 @@ export function authCallback(req: Request, res: Response) {
             client.setCredentials(resp.tokens);
             console.log('Tokens acquired!');    //@Debug
             res.redirect(`/google/userdata`); //@Todo fix redirect not working
+            res.end();
         }).catch(err => {
             res.status(500);
             res.send(err);
@@ -39,21 +40,24 @@ export function authCallback(req: Request, res: Response) {
 }
 
 export function login(req: Request, res: Response) {
+    console.log('Hello login function');
     client.request({url}).then(resp => {
+        console.log(resp.data);
         const name = {
             // @ts-ignore
-            fname: resp.data.names.givenName,
+            fname: resp.data.names[0].givenName,
             // @ts-ignore
-            lname: resp.data.names.familyName
+            lname: resp.data.names[0].familyName
         };
         // @ts-ignore
-        const mail = resp.data.emailAddresses.value
+        const mail = resp.data.emailAddresses[0].value
+        console.log('mail: ', mail);
 
         async function getUname() {
             let uname:string = ""+name.fname+name.lname
             while (true) {
                 const res = await findUser(uname);
-                if (res) {
+                if (res.length > 0) {
                     uname+=Math.round(Math.random()*10);
                 } else {
                     break;
@@ -63,6 +67,7 @@ export function login(req: Request, res: Response) {
         }
 
         getUname().then(uname => {
+            console.log(uname);
             //create user in database
             createMinimalUser(new MinimalUser(mail, name.fname+name.lname, uname)).then(usr => {
                 console.log(usr); //@Debug
@@ -75,7 +80,13 @@ export function login(req: Request, res: Response) {
                 });
                 //res.redirect('/complete-login');
                 res.end();
+            }).catch(err => {
+                console.log(err);
+                res.end();
             })
         });
+    }).catch(err => {
+        console.log(err);
+        res.end();
     });
 }

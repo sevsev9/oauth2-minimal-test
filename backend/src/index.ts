@@ -27,7 +27,8 @@ dbConnect(
   process.env.MONGODB_PORT!,
   process.env.MONGODB_AUTHDATABASE!,
   process.env.MONGODB_USER!,
-  process.env.MONGODB_PASSWORD!
+  process.env.MONGODB_PASSWORD!,
+  process.env.MONGO_DB!
 ).then(msg => {
   console.log(msg);
   app.listen(process.env.PORT, () => {
