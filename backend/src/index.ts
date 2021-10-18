@@ -1,8 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
-import {dbConnect} from "./db/dbUtil";
-import {testFileRoute, oAuthReturnRoute, authGitHub} from "./routes/userRoutes";
-import axios from "axios";
+import { dbConnect } from "./db/dbUtil";
+import {testFileRoute} from "./routes/siteRoutes";
+import GHRouter from "./routes/gitHubOAuthRouter";
+import GRouter from "./routes/googleOAuthRouter";
+import AuthRouter from "./routes/authRouter";
+
 
 dotenv.config();
 
@@ -11,33 +14,21 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 app.get('/test', testFileRoute);
-app.get('/oauth', oAuthReturnRoute);
-app.get('/auth', authGitHub);
-app.use('/', express.static('public'))
 
-app.get('/userdata', (req, res) => {
+app.use('/google', GRouter);
+app.use('/github', GHRouter);
 
-  axios.get('https://api.github.com/user', {
-    headers: {
-      Authorization: 'token '+req.query.token
-    }
-  }).then(_res => {
-    res.status(200);
-    res.send(_res.data);
-    res.end();
-  }).catch(err => {
-    res.status(500);
-    res.send(err);
-    res.end();
-  });
-})
+app.use('/', express.static('public'));
+
+
 
 dbConnect(
   process.env.MONGODB_HOST!,
   process.env.MONGODB_PORT!,
   process.env.MONGODB_AUTHDATABASE!,
   process.env.MONGODB_USER!,
-  process.env.MONGODB_PASSWORD!
+  process.env.MONGODB_PASSWORD!,
+  process.env.MONGO_DB!
 ).then(msg => {
   console.log(msg);
   app.listen(process.env.PORT, () => {
